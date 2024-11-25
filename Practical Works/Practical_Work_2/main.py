@@ -3,11 +3,12 @@ import xml.etree.ElementTree as ET
 import time
 
 # Тестовый путь до файла
-TEST_PATH = "test.xml"
+TEST_PATH_XML = "test.xml"
+TEST_PATH_CSV = "test.csv"
 
 
 class File:
-    def __init__(self, path=TEST_PATH):
+    def __init__(self, path):
         self.path = path
 
     def read_line(self):
@@ -15,7 +16,7 @@ class File:
             for line in file:
                 yield line.strip()
 
-    def getline(self, line):
+    def get_line(self, line):
         return line
 
     def read_file(self):
@@ -122,6 +123,14 @@ class UserWork:
     path_xml = "Files/address.xml"
     path_csv = "Files/address.csv"
 
+    def __init__(self):
+        if not os.path.exists(self.path_xml):
+            print("[ERROR] Не найден Practical_Work_2/Files/adress.xml  Заменен на test.xml")
+            self.path_xml = TEST_PATH_XML
+        if not os.path.exists(self.path_csv):
+            print("[ERROR] Не найден Practical_Work_2/Files/adress.csv  Заменен на test.csv")
+            self.path_csv = TEST_PATH_CSV
+
     def start_cycle(self):
         print("Вам необходимо ввести путь до файла справочника. Если вы не хотите вводить путь, то введите:\n"
               f"1 - {self.path_xml}\n"
@@ -152,6 +161,7 @@ class UserWork:
         file.read_file()
 
     def start_program(self):
+
         while True:
             print("")
             result = self.start_cycle()

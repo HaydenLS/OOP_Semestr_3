@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+<item city="Барнаул" street="Дальняя улица" house="56" floor="2" />
+<item city="Батайск" street="Мостотреста, улица" house="133" floor="4" />
+<item city="Батайск" street="Мостотреста, улица" house="134" floor="4" />
+<item city="Батайск" street="Мостотреста, улица" house="135" floor="4" />
+<item city="Батайск" street="Мостотреста, улица" house="136" floor="4" />
+<item city="Батайск" street="Мостотреста, улица" house="137" floor="4" />
+<item city="Великий Новгород" street="Филимонковская улица" house="44" floor="1" />
+<item city="Абакан" street="2-я Валуевская улица" house="172" floor="3" />
+<item city="Бугульма" street="Варшавское шоссе" house="92" floor="2" />
+</root>

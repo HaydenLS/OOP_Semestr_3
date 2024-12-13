@@ -7,8 +7,10 @@ import yt_dlp
 import xml.etree.ElementTree as ET
 from yt_work import YtHelper
 
+
 class ConfigManager:
     """Класс для управления конфигурацией"""
+
     def __init__(self, config_path):
         self.config_path = config_path
         self.tree = ET.parse(config_path)
@@ -23,6 +25,7 @@ class ConfigManager:
 
 class YouTubeBot:
     """Основной класс бота"""
+
     def __init__(self, token, download_dir='downloads'):
         self.token = token
         self.download_dir = download_dir
@@ -46,7 +49,8 @@ class YouTubeBot:
                                         f'Отправь ссылку на видео с YouTube или используй команду /find (название) для поиска')
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text('Отправь ссылку на видео с YouTube или используй команду /find (название) для поиска')
+        await update.message.reply_text(
+            'Отправь ссылку на видео с YouTube или используй команду /find (название) для поиска')
 
     async def find_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_query = update.message.text.replace("/find", "").strip()
@@ -61,6 +65,11 @@ class YouTubeBot:
     async def choose_video(self, update: Update, context: ContextTypes.DEFAULT_TYPE, search_message):
         user_query = context.user_data.get('query')
         videos = self.yt_helper.search_youtube_videos(user_query, max_results=5)
+
+        # Случай, если мы не нашли ни 1 видео
+        if len(videos) == 0:
+            await search_message.edit_text("Не удалось найти видео по вашему запросу( Попробуйте еще раз.")
+            return
 
         keyboard = [
             [InlineKeyboardButton(f'{video[0]}, {video[1]}', callback_data=f"video_{video[2]}")]
@@ -108,7 +117,8 @@ class YouTubeBot:
         if "mp3" in resolution:
             message = await query.edit_message_text(f'Скачивание аудио, подождите немного...')
         else:
-            message = await query.edit_message_text(f'Скачивание видео в разрешении {resolution}p, подождите немного...')
+            message = await query.edit_message_text(
+                f'Скачивание видео в разрешении {resolution}p, подождите немного...')
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
@@ -134,21 +144,21 @@ class YouTubeBot:
             os.remove(file_path)
 
     def _get_download_options(self, resolution):
-            if 'mp3' in resolution:
-                return {
-                    'format': 'bestaudio/best',
-                    'postprocessors': [{
-                        'key': 'FFmpegExtractAudio',
-                        'preferredcodec': 'mp3',
-                        'preferredquality': '192',
-                    }],
-                    'outtmpl': f'{self.download_dir}/%(title)s.%(ext)s',
-                }
+        if 'mp3' in resolution:
             return {
-                'outtmpl': f'{self.download_dir}/%(title)s_{resolution}p.%(ext)s',
-                'format': f'bestvideo[height<={resolution}]+bestaudio/best[ext=mp4]',
-                'merge_output_format': 'mp4',
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }],
+                'outtmpl': f'{self.download_dir}/%(title)s.%(ext)s',
             }
+        return {
+            'outtmpl': f'{self.download_dir}/%(title)s_{resolution}p.%(ext)s',
+            'format': f'bestvideo[height<={resolution}]+bestaudio/best[ext=mp4]',
+            'merge_output_format': 'mp4',
+        }
 
     async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = update.message.text
@@ -165,7 +175,6 @@ class YouTubeBot:
         print('Starting bot...')
         print("Polling...")
         self.app.run_polling(poll_interval=3)
-
 
 
 if __name__ == '__main__':
